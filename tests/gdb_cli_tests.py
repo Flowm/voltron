@@ -16,7 +16,6 @@ import time
 import logging
 import pexpect
 import os
-import six
 
 from mock import Mock
 from nose.tools import *
@@ -166,11 +165,3 @@ def test_backtrace():
     assert res.is_success
     assert res.frames[0]['name'] == "main"
     assert res.frames[0]['index'] == 0
-
-
-# def test_write_memory():
-#     value = six.b("AAAAAAAA")
-#     res = client.perform_request('write_memory', address=registers['rsp'], value=value)
-#     assert res.is_success
-#     res = client.perform_request('memory', address=registers['rsp'], length=len(value))
-#     assert res.memory == value
