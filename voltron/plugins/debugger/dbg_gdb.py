@@ -34,24 +34,20 @@ if HAVE_GDB:
                 class Invocation(object):
                     def __call__(killme):
                         # when the invocation is called, we call the function and stick the result into the queue
-                        try:
-                            res = func(self, *args, **kwargs)
-                        except Exception as e:
-                            # if we got an exception, just queue that instead
-                            res = e
+                        log.debug("calling invocation {}({}, {})".format(func, args, kwargs))
+                        res = func(self, *args, **kwargs)
+                        log.debug("got res = {}".format(res))
                         q.put(res)
+                        log.debug("pushed")
 
                 # post this invocation to be called on the main thread at the next opportunity
                 gdb.post_event(Invocation())
 
                 # now we wait until there's something in the queue, which indicates that the invocation has run and return
                 # the result that was pushed onto the queue by the invocation
+                log.debug("waiting for queue")
                 res = q.get()
-
-                # if we got an exception back from the posted event, raise it
-                if isinstance(res, Exception):
-                    raise res
-
+                log.debug("returning")
                 return res
             else:
                 return func(self, *args, **kwargs)
